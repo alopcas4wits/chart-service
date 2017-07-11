@@ -1,4 +1,4 @@
-FROM maven:3.3.9-jdk-8
+FROM alopcas4wits/jdk8-dev:1.0
 MAINTAINER Jonas Holtorf <Jonas.Holtorf@4wits.de>
 
 #"-agentpath:/jrebel/lib/libjrebel64.so", "-Drebel.log.file=/jrebel.log",
