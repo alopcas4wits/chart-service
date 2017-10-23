@@ -45,12 +45,12 @@ public abstract class ChartUtil {
         c.setLegendSide(request.getLegendSide());
     }
 
-    public static PieChart initializePieChart(PieChartRequest request) {
+    public static DoughnutChart initializePieChart(PieChartRequest request) {
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (DataUnit data : request.getData()) {
             pieChartData.add(new javafx.scene.chart.PieChart.Data(data.getName(), data.getValue()));
         }
-        final ExtendedPieChart chart = new ExtendedPieChart(pieChartData);
+        final DoughnutChart chart = new DoughnutChart(pieChartData);
         if (request.getLegendSize() > 0) {
             chart.setLegendSize(request.getLegendSize());
         }

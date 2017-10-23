@@ -9,6 +9,6 @@ WORKDIR /app
 ADD src/main/resources/startup-dev.sh /app/startup-dev.sh
 
 #CMD ["mvn","-Pdev","-Dfork=true", "-Drun.jvmArguments=-Xmx128m -Xms64m -Xdebug server=y,suspend=n,address=7000", "spring-boot:run", ">","~/log.txt"]
-ENTRYPOINT sh /app/startup-dev.sh
+ENTRYPOINT sh /app/src/main/resources/startup-dev.sh
 EXPOSE 8080
 EXPOSE 7000

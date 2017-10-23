@@ -1,0 +1,38 @@
+* { -fx-font-family: "Source Sans Pro"; }
+
+.default-color0.chart-pie { -fx-pie-color: #000000; }
+.default-color1.chart-pie { -fx-pie-color: #c81517; }
+.default-color2.chart-pie { -fx-pie-color: #90c6e0; }
+.default-color3.chart-pie { -fx-pie-color: #0f586f; }
+.default-color4.chart-pie { -fx-pie-color: #797e81; }
+
+.chart-legend { -fx-background-color:  transparent; }
+
+.chart-legend-item-symbol { -fx-background-radius: 0; }
+
+.doughnutInnerCircle { -fx-fill: #fff; }
+
+.chart-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.chart-legend-item {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: #000;
+    -fx-fill: #000;
+}
+
+.chart-pie-label {
+    -fx-fill: #000;
+    -fx-font-size: 14px;
+}
+
+.chart-pie {
+    -fx-border-color: #fff;
+    -fx-background-color: -fx-pie-color;
+}

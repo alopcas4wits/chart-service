@@ -3,6 +3,7 @@ package de.wits.chart.service;
 import com.google.common.base.Strings;
 import de.wits.chart.model.DataUnit;
 import de.wits.chart.model.LabelPosition;
+import de.wits.chart.model.chart.DoughnutChart;
 import de.wits.chart.model.request.GenericXYChartRequest;
 import de.wits.chart.model.request.bar.ComplexBarChartRequest;
 import de.wits.chart.model.request.bar.GenericBarChart;
@@ -17,12 +18,12 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.WritableImage;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.aspectj.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +79,7 @@ public class ChartServiceImpl extends Application implements ChartService {
     public Future<byte[]> generatePieChart(PieChartRequest request) throws IOException, ExecutionException, InterruptedException {
         Scene scene = new Scene(new Group());
 
-        PieChart chart = ChartUtil.initializePieChart(request);
+        DoughnutChart chart = ChartUtil.initializePieChart(request);
 
         if (request.getLabel() != null && request.getLabel().size() > 0) {
             chart.getData().forEach(d -> {
@@ -95,6 +97,8 @@ public class ChartServiceImpl extends Application implements ChartService {
         }
 
         ((Group) scene.getRoot()).getChildren().add(chart);
+
+        chart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/doughnut_style.css")));
 
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
@@ -122,8 +126,10 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         displayLabelsIfPossible(request, lineChart);
 
-
         ((Group) scene.getRoot()).getChildren().add(lineChart);
+
+        LOG.info("style:\n" + FileUtil.readAsString(new File("/app/src/main/resources/css/linechart_style.css")));
+        lineChart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/linechart_style.css")));
 
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
@@ -147,6 +153,10 @@ public class ChartServiceImpl extends Application implements ChartService {
         }
 
         displayLabelsIfPossible(request, barChart);
+
+        LOG.info("style:\n" + FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
+        barChart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
+
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
 
@@ -158,7 +168,6 @@ public class ChartServiceImpl extends Application implements ChartService {
         LOG.info("Creating scene");
         Scene scene = new Scene(barChart);
 
-        LOG.info("Adding data to the chart");
         request.getData().forEach((s, dataUnits) -> {
             XYChart.Series<String, Number> tmpSeries = new XYChart.Series();
             tmpSeries.setName(s);
@@ -170,7 +179,9 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         displayLabelsIfPossible(request, barChart);
 
-        LOG.info("Snapping scene");
+        LOG.info("dat style:\n" + FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
+        barChart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
+
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
 
@@ -204,10 +215,9 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         while (image[0] == null) {
             try {
-                LOG.debug("Waiting for image...");
                 Thread.sleep(1);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.error("Error while snapping the scene", e);
                 throw new RuntimeException("Error while snapping the scene");
             }
         }

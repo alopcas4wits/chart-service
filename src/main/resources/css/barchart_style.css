@@ -1,0 +1,52 @@
+* { -fx-font-family: "Source Sans Pro"; }
+
+.chart-bar { -fx-background-radius: 0; }
+
+.default-color0.chart-bar { -fx-background-color: #000000; }
+.default-color1.chart-bar { -fx-background-color: #c81517; }
+.default-color2.chart-bar { -fx-background-color: #90c6e0; }
+.default-color3.chart-bar { -fx-background-color: #0e556b; }
+.default-color4.chart-bar { -fx-background-color: #797e81; }
+
+.chart-alternative-row-fill {
+    -fx-fill: #fff;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #ededed;
+    -fx-stroke-width: 6;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
+}
+
+.axis {
+    -fx-tick-label-font-size: 15px;
+    -fx-tick-label-fill: #9d9d9c;
+    -fx-tick-length: 0;
+    -fx-minor-tick-length: 0;
+}
+
+.axis-tick-mark, .axis-minor-tick-mark {
+    -fx-visibility: hidden;
+    -fx-text-fill: transparent;
+}
+
+.axis-label {
+   -fx-text-fill: #ededed;
+}
+
+.chart-legend { -fx-background-color:  transparent; }
+
+.chart-legend-item-symbol { -fx-background-radius: 0; }
+
+.chart-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.chart-legend-item {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
