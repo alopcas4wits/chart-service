@@ -43,9 +43,10 @@ public class ChartApplicationTest {
 
     @Test
     public void pieChartTest() {
-        String jsonInput = "{\"title\":\"Michelin\",\"showLegend\":true,\"legendSide\":\"BOTTOM\",\"label\":{\"Michelinprofiltyp1\":\"20 (12%)\",\"Michelinprofiltyp2\":\"50 (28%)\",\"Michelinprofiltyp3\":\"30 (16%)\",\"Michelinprofiltyp4\":\"70 (39%)\",\"Michelinprofiltyp5\":\"10 (5%)\"},\"data\":[{\"name\":\"Michelinprofiltyp1\",\"value\":20},{\"name\":\"Michelinprofiltyp2\",\"value\":50},{\"name\":\"Michelinprofiltyp3\",\"value\":30},{\"name\":\"Michelinprofiltyp4\",\"value\":70},{\"name\":\"Michelinprofiltyp5\",\"value\":10}]}";
+        String jsonInput = "{\"title\":\"Michelin\", \"labelSize\": 100,\"showLegend\":true,\"legendSide\":\"BOTTOM\",\"label\":{\"Michelinprofiltyp1\":\"20 (12%)\",\"Michelinprofiltyp2\":\"50 (28%)\",\"Michelinprofiltyp3\":\"30 (16%)\",\"Michelinprofiltyp4\":\"70 (39%)\",\"Michelinprofiltyp5\":\"10 (5%)\"},\"data\":[{\"name\":\"Michelinprofiltyp1\",\"value\":20},{\"name\":\"Michelinprofiltyp2\",\"value\":50},{\"name\":\"Michelinprofiltyp3\",\"value\":30},{\"name\":\"Michelinprofiltyp4\",\"value\":70},{\"name\":\"Michelinprofiltyp5\",\"value\":10}]}";
         byte[] chartData = new byte[0];
         try {
+            PieChartRequest req = new Gson().fromJson(jsonInput, PieChartRequest.class);
             chartData = chartService.generatePieChart(new Gson().fromJson(jsonInput, PieChartRequest.class)).get();
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,6 +137,18 @@ public class ChartApplicationTest {
         }
 
         Assert.assertFalse(chartData.length == 0);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File("/home/alberto/Desktop/test2334.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(chartData);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -150,5 +163,17 @@ public class ChartApplicationTest {
             fail("No exceptions should be thrown");
         }
         Assert.assertFalse(chartData.length == 0);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File("/home/alberto/Desktop/test2334.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(chartData);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

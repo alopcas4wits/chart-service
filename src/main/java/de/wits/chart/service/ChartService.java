@@ -22,4 +22,5 @@ public interface ChartService {
 
     public Future<byte[]> generateLineChart(LineChartRequest request) throws IOException, ExecutionException, InterruptedException;
 
+    public Future<byte[]> generateStackedBarChart(ComplexBarChartRequest request) throws IOException, ExecutionException, InterruptedException;
 }

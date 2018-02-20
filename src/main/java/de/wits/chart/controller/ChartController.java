@@ -22,16 +22,14 @@ import java.net.PasswordAuthentication;
 /**
  * Created by alberto on 09.03.17.
  */
-@RestController("/charts")
+@RestController
 public class ChartController {
 
     ChartService chartService;
-    Gson gson;
 
     @Autowired
     public ChartController(ChartService chartService) {
         this.chartService = chartService;
-        this.gson = new Gson();
     }
 
     static {
@@ -45,9 +43,10 @@ public class ChartController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChartController.class);
 
-    @RequestMapping(value = "/pie", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> getPieChart(@RequestBody PieChartRequest request) {
+    @RequestMapping(value = "/pie", method = RequestMethod.POST, consumes = "text/plain;charset=UTF-8")
+    public ResponseEntity<byte[]> getPieChart(@RequestBody String req) {
         LOG.debug("Building pie chart using the data...");
+        PieChartRequest request = new Gson().fromJson(req, PieChartRequest.class);
         byte[] chart;
 
         try {
@@ -60,9 +59,10 @@ public class ChartController {
         return new ResponseEntity<>(chart, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/line", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> getLineChart(@RequestBody LineChartRequest request) {
+    @RequestMapping(value = "/line", method = RequestMethod.POST, consumes = "text/plain;charset=UTF-8")
+    public ResponseEntity<byte[]> getLineChart(@RequestBody String req) {
         LOG.debug("Building Line chart using the data...");
+        LineChartRequest request = new Gson().fromJson(req, LineChartRequest.class);
         byte[] chart;
 
         try {
@@ -75,9 +75,10 @@ public class ChartController {
         return new ResponseEntity<>(chart, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/bar/simple", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> getSimpleBarChart(@RequestBody SimpleBarChartRequest request) {
+    @RequestMapping(value = "/bar/simple", method = RequestMethod.POST, consumes = "text/plain;charset=UTF-8")
+    public ResponseEntity<byte[]> getSimpleBarChart(@RequestBody String req) {
         LOG.debug("Building simple bar chart using the data...");
+        SimpleBarChartRequest request = new Gson().fromJson(req, SimpleBarChartRequest.class);
         byte[] chart;
 
         try {
@@ -90,14 +91,32 @@ public class ChartController {
         return new ResponseEntity<>(chart, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/bar/complex", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> getComplexBarChart(@RequestBody ComplexBarChartRequest request) {
+    @RequestMapping(value = "/bar/complex", method = RequestMethod.POST, consumes = "text/plain;charset=UTF-8")
+    public ResponseEntity<byte[]> getComplexBarChart(@RequestBody String req) {
 
         LOG.info("Building complex bar chart using the data...");
+        ComplexBarChartRequest request = new Gson().fromJson(req, ComplexBarChartRequest.class);
         byte[] chart;
 
         try {
             chart = chartService.generateComplexBarChart(request).get();
+        } catch (Exception e) {
+            LOG.error("Exception occurred while building the chart", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(chart, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/bar/stacked", method = RequestMethod.POST, consumes = "text/plain;charset=UTF-8")
+    public ResponseEntity<byte[]> getStackedBarChart(@RequestBody String req) {
+
+        LOG.info("Building stacked bar chart using the data...");
+        ComplexBarChartRequest request = new Gson().fromJson(req, ComplexBarChartRequest.class);
+        byte[] chart;
+
+        try {
+            chart = chartService.generateStackedBarChart(request).get();
         } catch (Exception e) {
             LOG.error("Exception occurred while building the chart", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

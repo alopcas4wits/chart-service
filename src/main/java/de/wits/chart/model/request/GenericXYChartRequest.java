@@ -86,7 +86,7 @@ public class GenericXYChartRequest extends ChartRequest {
     }
 
     public void setyAxisUpperBound(int yAxisUpperBound) {
-        this.yAxisUpperBound = yAxisUpperBound;
+        this.yAxisUpperBound = (int) Math.ceil((yAxisUpperBound / 100d)) * 100;
     }
 
     public int getxAxisUpperBound() {

@@ -1,6 +1,7 @@
 package de.wits.chart.service;
 
 import com.google.common.base.Strings;
+import de.wits.chart.constants.ChartColors;
 import de.wits.chart.model.DataUnit;
 import de.wits.chart.model.LabelPosition;
 import de.wits.chart.model.chart.DoughnutChart;
@@ -18,12 +19,12 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.WritableImage;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.aspectj.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -98,7 +99,7 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         ((Group) scene.getRoot()).getChildren().add(chart);
 
-        chart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/doughnut_style.css")));
+        chart.getStylesheets().addAll("file:" + new File("/app/css/doughnut_style.css").getAbsolutePath());
 
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
@@ -128,8 +129,7 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         ((Group) scene.getRoot()).getChildren().add(lineChart);
 
-        LOG.info("style:\n" + FileUtil.readAsString(new File("/app/src/main/resources/css/linechart_style.css")));
-        lineChart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/linechart_style.css")));
+        lineChart.getStylesheets().addAll("file:" + new File("/app/css/linechart_style.css").getAbsolutePath());
 
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
@@ -149,13 +149,12 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         // Set a different color for each column
         for (Object data : tmpSeries.getData()) {
-            ((XYChart.Data) data).getNode().setStyle("-fx-bar-fill: CHART_COLOR_" + (tmpSeries.getData().indexOf(data) + 1));
+            ((XYChart.Data) data).getNode().setStyle("-fx-bar-fill: " + ChartColors.barChartCodes.get(tmpSeries.getData().indexOf(data)));
         }
 
         displayLabelsIfPossible(request, barChart);
 
-        LOG.info("style:\n" + FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
-        barChart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
+        barChart.getStylesheets().addAll("file:" + new File("/app/css/simplebarchart_style.css").getAbsolutePath());
 
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
@@ -169,7 +168,7 @@ public class ChartServiceImpl extends Application implements ChartService {
         Scene scene = new Scene(barChart);
 
         request.getData().forEach((s, dataUnits) -> {
-            XYChart.Series<String, Number> tmpSeries = new XYChart.Series();
+            XYChart.Series tmpSeries = new XYChart.Series();
             tmpSeries.setName(s);
             dataUnits.forEach(dataUnit -> {
                 tmpSeries.getData().add(new XYChart.Data(dataUnit.getName(), dataUnit.getValue()));
@@ -179,8 +178,31 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         displayLabelsIfPossible(request, barChart);
 
-        LOG.info("dat style:\n" + FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
-        barChart.setStyle(FileUtil.readAsString(new File("/app/src/main/resources/css/barchart_style.css")));
+        barChart.getStylesheets().addAll("file:" + new File("/app/css/barchart_style.css").getAbsolutePath());
+
+        return new AsyncResult<byte[]>(snapScene(scene).get());
+    }
+
+    @Override
+    @Async
+    public Future<byte[]> generateStackedBarChart(ComplexBarChartRequest request) throws IOException, ExecutionException, InterruptedException {
+        LOG.info("Initializing barchart");
+        StackedBarChart barChart = ChartUtil.initializeStackedBarChart(request);
+        LOG.info("Creating scene");
+        Scene scene = new Scene(barChart);
+
+        request.getData().forEach((s, dataUnits) -> {
+            XYChart.Series tmpSeries = new XYChart.Series();
+            tmpSeries.setName(s);
+            dataUnits.forEach(dataUnit -> {
+                tmpSeries.getData().add(new XYChart.Data(dataUnit.getName(), dataUnit.getValue()));
+            });
+            barChart.getData().add(tmpSeries);
+        });
+
+        displayLabelsIfPossible(request, barChart);
+
+        barChart.getStylesheets().addAll("file:" + new File("/app/css/barchart_style.css").getAbsolutePath());
 
         return new AsyncResult<byte[]>(snapScene(scene).get());
     }
@@ -224,6 +246,7 @@ public class ChartServiceImpl extends Application implements ChartService {
 
         ImageIO.write(SwingFXUtils.fromFXImage(image[0], null), "png", s);
 
+        LOG.info("Returning file....");
         return new AsyncResult<byte[]>(s.toByteArray());
     }
 

@@ -100,10 +100,14 @@ public abstract class ChartUtil {
             c = (XYChart) chartType.getConstructor(Axis.class, Axis.class).newInstance(xAxis, yAxis);
 
             if (request.getLegendSize() > 0) {
-                c.getClass().getMethod("setLegendSize", double.class).invoke(c, request.getLegendSize());
+                try {
+                    c.getClass().getMethod("setLegendSize", double.class).invoke(c, request.getLegendSize());
+                } catch (Exception e) {
+                    
+                }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error happened.");
+            throw new RuntimeException("Unexpected error happened.", e);
         }
         initializeChart(request, c);
 
@@ -130,6 +134,13 @@ public abstract class ChartUtil {
     public static BarChart initializeBarChart(GenericXYChartRequest request) {
         ExtendedBarChart barChart = (ExtendedBarChart) initializeGenericXYChart(request, ExtendedBarChart.class);
         barChart.setBarGap(10);
+        barChart.setCategoryGap(80);
+
+        return barChart;
+    }
+
+    public static StackedBarChart initializeStackedBarChart(GenericXYChartRequest request) {
+        StackedBarChart barChart = (StackedBarChart) initializeGenericXYChart(request, StackedBarChart.class);
         barChart.setCategoryGap(80);
 
         return barChart;

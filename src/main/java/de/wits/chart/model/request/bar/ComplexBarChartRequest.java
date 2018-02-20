@@ -19,4 +19,13 @@ public class ComplexBarChartRequest extends GenericBarChart {
         this.data = data;
     }
 
+    private boolean stacked;
+
+    public boolean isStacked() {
+        return stacked;
+    }
+
+    public void setStacked(boolean stacked) {
+        this.stacked = stacked;
+    }
 }

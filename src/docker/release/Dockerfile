@@ -6,8 +6,8 @@ RUN apt-get update\
 
 ADD ./src/main/resources/startup.sh /app/startup.sh
 ADD ./src/main/resources/css /app/css/
-ADD target/app.jar /app/app.jar
+ADD ./target/app.jar /app/app.jar
 
-ENTRYPOINT sh /app/src/main/resources/startup.sh
+ENTRYPOINT sh /app/startup.sh
 
 EXPOSE 8080
